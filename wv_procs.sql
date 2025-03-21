@@ -212,10 +212,12 @@ BEGIN
     ;
 END;
 
-CREATE PROCEDURE USERNAME_TO_LOWER
+ALTER PROCEDURE USERNAME_TO_LOWER
+    @id_player INT
 AS
 BEGIN
     UPDATE players
-    SET pseudo = LOWER(pseudo);
+    SET pseudo = LOWER(pseudo)
+    WHERE id_player = @id_player;
 END;
 
