@@ -6,9 +6,4 @@ ALTER TABLE players_play ALTER COLUMN origin_position_col VARCHAR(50);
 ALTER TABLE players_play ALTER COLUMN origin_position_row VARCHAR(50);
 ALTER TABLE players_play ALTER COLUMN target_position_col VARCHAR(50);
 ALTER TABLE players_play ALTER COLUMN target_position_row VARCHAR(50);
-<<<<<<< HEAD
 ALTER TABLE parties ADD nb_tour INT DEFAULT 10;
-=======
-
-
->>>>>>> Sandra
