@@ -50,7 +50,7 @@ GROUP BY
 -- tour
 -- • nb de secondes passées dans le tour pour le joueur
 
-
+DROP VIEW ALL_PLAYERS_ELAPSED_TOUR
 CREATE VIEW ALL_PLAYERS_ELAPSED_TOUR AS
 SELECT p.pseudo, pt.title_party, t.id_turn, t.start_time AS turn_start_time, pp.start_time AS decision_start_time, 
     (pp.start_time - t.start_time) AS elapsed_time
@@ -72,6 +72,7 @@ GROUP BY p.pseudo, pt.title_party, t.id_turn, t.start_time, pp.start_time;
 -- • vainqueur dépendant du rôle du joueur
 -- • temps moyen de prise de décision du joueur
 
+DROP VIEW ALL_PLAYERS_STATS
 CREATE VIEW ALL_PLAYERS_STATS AS
 SELECT p.pseudo, r.description_role, pt.title_party, COUNT(DISTINCT t.id_turn) AS nb_turns_played,
     (SELECT COUNT(DISTINCT t.id_turn) FROM turns t WHERE t.id_party = pt.id_party) AS nb_total_turns,
