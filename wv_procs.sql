@@ -98,7 +98,7 @@ BEGIN
 
         INSERT INTO turns (id_turn, id_party, start_time, end_time)
         VALUES (
-            @PARTY_ID + @i, 
+            (@PARTY_ID * 1000) + @i, 
             @PARTY_ID,
             @current_datetime,
             DATEADD(SECOND, @turn_duration, @current_datetime)
