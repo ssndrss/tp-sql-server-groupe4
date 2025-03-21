@@ -46,10 +46,14 @@ BEGIN
     END;
 END;
 
-DROP TRIGGER IF EXISTS trig_USERNAME_TO_LOWER
-CREATE TRIGGER trig_USERNAME_TO_LOWER
-BEFORE INSERT ON players
-FOR EACH ROW
+CREATE TRIGGER trg_UsernameToLower
+ON players
+AFTER INSERT
+AS
 BEGIN
-    SET NEW.pseudo = USERNAME_TO_LOWER(NEW.pseudo);
+    SET NOCOUNT ON;
+
+    UPDATE players
+    SET pseudo = LOWER(pseudo)
+    WHERE id_player IN (SELECT id_player FROM inserted);
 END;

@@ -1,6 +1,4 @@
 CREATE FUNCTION dbo.random_position(
-    @rows INT,
-    @cols INT,
     @id_party INT
 )
 RETURNS @result TABLE (
@@ -10,16 +8,23 @@ RETURNS @result TABLE (
 AS
 BEGIN
     DECLARE @row INT, @col INT;
-    DECLARE @random_row FLOAT;
-	DECLARE @random_col FLOAT;
+    DECLARE @random_row FLOAT, @random_col FLOAT;
+    DECLARE @max_rows INT, @max_cols INT;
+
+    SELECT @max_rows = row, @max_cols = col
+    FROM parties
+    WHERE id_party = @id_party;
+
+    IF @max_rows IS NULL OR @max_cols IS NULL
+        RETURN;
 
     WHILE 1 = 1
     BEGIN
         SELECT TOP 1 @random_row = value FROM RAND;
-    	SELECT TOP 1 @random_col = value FROM RAND;
+        SELECT TOP 1 @random_col = value FROM RAND;
 
-        SET @row = CAST(ROUND(@random_row * (@rows - 1), 0) AS INT);
-        SET @col = CAST(ROUND(@random_col * (@cols - 1), 0) AS INT);
+        SET @row = CAST(ROUND(@random_row * (@max_rows - 1), 0) AS INT);
+        SET @col = CAST(ROUND(@random_col * (@max_cols - 1), 0) AS INT);
 
         IF NOT EXISTS (
             SELECT 1 FROM players_play pp

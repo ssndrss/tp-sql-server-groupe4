@@ -211,3 +211,11 @@ BEGIN
         END AS 'Résultat de la partie'
     ;
 END;
+
+CREATE PROCEDURE USERNAME_TO_LOWER
+AS
+BEGIN
+    UPDATE players
+    SET pseudo = LOWER(pseudo);
+END;
+
