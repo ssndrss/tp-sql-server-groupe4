@@ -40,3 +40,18 @@ END;
 -- • temps moyen de prise de décision du joueur
 
 CREATE FUNCTION get_the_winner(@partyid INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT p.pseudo, r.description_role, pt.title_party, COUNT(DISTINCT t.id_turn) AS nb_turns_played,
+        (SELECT COUNT(DISTINCT t.id_turn) FROM turns t WHERE t.id_party = pt.id_party) AS nb_total_turns,
+        r.description_role
+        AVG(pp.end_time - pp.start_time) AS avg_decision_time
+    FROM players p
+    INNER JOIN players_in_parties pip ON p.id_player = pip.id_player
+    INNER JOIN roles r ON pip.id_role = r.id_role
+    INNER JOIN parties pt ON pip.id_party = pt.id_party
+    WHERE pt.id_party = @partyid
+    GROUP BY p.pseudo, r.description_role, pt.title_party;
+);
