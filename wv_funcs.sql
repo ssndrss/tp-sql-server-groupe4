@@ -46,32 +46,25 @@ END;
 -- affecter au joueur en cours d’inscription en respectant les quotas
 -- de loups et de villageois
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'FN' AND name = 'random_role')
+    DROP FUNCTION random_role;
+
 CREATE FUNCTION random_role()
 RETURNS VARCHAR(50)
 AS
 BEGIN
-    DECLARE @nb_loups INT = 0;
-    DECLARE @nb_villageois INT = 0;
     DECLARE @role VARCHAR(50);
-    
-    SELECT @nb_loups = COUNT(*) 
-    FROM players_in_parties pp
-    INNER JOIN roles r ON r.id_role = pp.id_role
-    WHERE r.description_role = 'loup';
+    DECLARE @random FLOAT;
 
-    SELECT @nb_villageois = COUNT(*) 
-    FROM players_in_parties pp
-    INNER JOIN roles r ON r.id_role = pp.id_role
-    WHERE r.description_role = 'villageois';
-    
-    IF @nb_loups < 3 
+    SELECT @random = value FROM RAND;
+
+    IF @random < 0.3
         SET @role = 'loup';
-    ELSE 
+    ELSE
         SET @role = 'villageois';
-    
+
     RETURN @role;
 END;
-
 
 -- Créer une fonction get_the_winner(@partyid INT) qui renvoie
 -- toutes les informations sur le vainqueur de la partie passée en

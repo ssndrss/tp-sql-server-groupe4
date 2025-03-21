@@ -39,6 +39,7 @@ JOIN
     parties pt ON pip.id_party = pt.id_party
 GROUP BY 
     p.pseudo, pt.title_party, pip.id_party, pip.id_player;
+
 CREATE VIEW ALL_PLAYERS AS
 SELECT
     players.pseudo AS nom_du_joueur,
