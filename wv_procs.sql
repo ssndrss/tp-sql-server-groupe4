@@ -212,104 +212,10 @@ BEGIN
     ;
 END;
 
-
-CREATE PROCEDURE COMPLETE_TOUR
-    @TOUR_ID INT,
-    @PARTY_ID INT
+CREATE PROCEDURE USERNAME_TO_LOWER
 AS
 BEGIN
-    SET NOCOUNT ON;
-    
-    CREATE TABLE #PlayerPositions (
-        id_player INT,
-        position_col VARCHAR(10),
-        position_row VARCHAR(10),
-        id_role INT,
-        is_alive VARCHAR(10)
-    );
-    
-    INSERT INTO #PlayerPositions (id_player, position_col, position_row, id_role, is_alive)
-    SELECT 
-        pp.id_player,
-        pp.target_position_col,
-        pp.target_position_row,
-        pip.id_role,
-        pip.is_alive
-    FROM 
-        players_play pp
-    JOIN 
-        players_in_parties pip ON pp.id_player = pip.id_player
-    WHERE 
-        pp.id_turn = @TOUR_ID
-        AND pip.id_party = @PARTY_ID
-        AND pip.is_alive = 'true';
-    
-    DECLARE @wolf_positions TABLE (
-        position_col VARCHAR(10),
-        position_row VARCHAR(10)
-    );
-    
-    INSERT INTO @wolf_positions
-    SELECT 
-        position_col, 
-        position_row
-    FROM 
-        #PlayerPositions
-    WHERE 
-        id_role = 1;
-    
-    DECLARE @eliminated_players TABLE (
-        id_player INT
-    );
-    
-    INSERT INTO @eliminated_players
-    SELECT 
-        pp.id_player
-    FROM 
-        #PlayerPositions pp
-    JOIN 
-        @wolf_positions wp ON pp.position_col = wp.position_col AND pp.position_row = wp.position_row
-    WHERE 
-        pp.id_role = 2
-        AND pp.is_alive = 'true';
-    
-    UPDATE 
-        players_in_parties
-    SET 
-        is_alive = 'false'
-    FROM 
-        players_in_parties pip
-    JOIN 
-        @eliminated_players ep ON pip.id_player = ep.id_player
-    WHERE 
-        pip.id_party = @PARTY_ID;
-    
-
-    DECLARE @villagers_alive INT;
-    
-    SELECT 
-        @villagers_alive = COUNT(*)
-    FROM 
-        players_in_parties
-    WHERE 
-        id_party = @PARTY_ID
-        AND id_role = 2 -- Villageois
-        AND is_alive = 'true';
-    
-
-    IF @villagers_alive = 0
-    BEGIN
-
-        PRINT 'Partie ' + CAST(@PARTY_ID AS VARCHAR(10)) + ' terminée - Tous les villageois sont morts!';
-    END
-    
-    DROP TABLE #PlayerPositions;
-    
-
-    SELECT 
-        'Tour ' + CAST(@TOUR_ID AS VARCHAR(10)) + ' complété' AS Status,
-        (SELECT COUNT(*) FROM @eliminated_players) AS PlayersEliminated,
-        @villagers_alive AS VillagersRemaining,
-        CASE WHEN @villagers_alive = 0 THEN 'Terminée - Victoire des loups' ELSE 'En cours' END AS GameStatus;
+    UPDATE players
+    SET pseudo = LOWER(pseudo);
 END;
 
