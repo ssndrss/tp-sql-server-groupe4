@@ -1,6 +1,7 @@
 -- Modification des colonnes de type TEXT en VARCHAR
 
-DROP VIEW ALL_PLAYERS_ELAPSED_GAME
+IF EXISTS (SELECT * FROM sys.views WHERE name = 'ALL_PLAYERS_ELAPSED_GAME')
+    DROP VIEW ALL_PLAYERS_ELAPSED_GAME;
 
 CREATE VIEW ALL_PLAYERS_ELAPSED_GAME AS
 SELECT 
@@ -38,8 +39,25 @@ JOIN
     parties pt ON pip.id_party = pt.id_party
 GROUP BY 
     p.pseudo, pt.title_party, pip.id_party, pip.id_player;
-    
-    
+CREATE VIEW ALL_PLAYERS AS
+SELECT
+    players.pseudo AS nom_du_joueur,
+    COUNT(DISTINCT parties.id_party) AS nombre_de_parties_jouees,
+    COUNT(DISTINCT turns.id_turn) AS nombre_de_tours_joues,
+    MIN(turns.start_time) AS date_et_heure_de_la_premiere_participation,
+    MAX(players_play.end_time) AS date_et_heure_de_la_derniere_action
+FROM players
+JOIN players_in_parties ON players.id_player = players_in_parties.id_player
+JOIN parties ON players_in_parties.id_party = parties.id_party
+JOIN turns ON parties.id_party = turns.id_party
+JOIN players_play ON players.id_player = players_play.id_player
+GROUP BY players.pseudo;
+
+
+CREATE VIEW RAND AS
+SELECT RAND() as VALUE;
+
+
 -- 3. Créer la vue ALL_PLAYERS_ELAPSED_TOUR qui affiche le temps
 -- moyen de chaque prise décision,
 -- Les colonnes attendues pour cette vue sont dans l’ordre :
