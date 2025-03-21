@@ -10,5 +10,9 @@ JOIN players_in_parties ON players.id_player = players_in_parties.id_player
 JOIN parties ON players_in_parties.id_party = parties.id_party
 JOIN turns ON parties.id_party = turns.id_party
 JOIN players_play ON players.id_player = players_play.id_player
-
 GROUP BY players.pseudo;
+
+
+CREATE VIEW RAND AS
+SELECT RAND() as VALUE;
+
