@@ -1,3 +1,5 @@
+USE tpgael
+
 create table parties (
     id_party int,
     title_party text
