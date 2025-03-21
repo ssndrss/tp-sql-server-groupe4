@@ -45,3 +45,15 @@ BEGIN
         DEALLOCATE tour_cursor;
     END;
 END;
+
+CREATE TRIGGER trg_UsernameToLower
+ON players
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE players
+    SET pseudo = LOWER(pseudo)
+    WHERE id_player IN (SELECT id_player FROM inserted);
+END;
